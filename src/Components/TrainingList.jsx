@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { AgGridReact } from "ag-grid-react";
-
 import { fetchTrainings } from "../trainingapi";
 import { parseISO } from "date-fns";
 import format from "date-fns/format";
+import AddTraining from "./AddTraining";
+import Button from "@mui/material/Button";
 
 // training list for router
 export default function TrainingList() {
@@ -14,8 +15,7 @@ export default function TrainingList() {
     handleFetch();
   }, []);
 
-  // column definitions for ag-grid
-  // eslint-disable-next-line no-unused-vars
+  // column definitions for ag-grid. valueformatters are used to get and modify values.
   const [colDef, setColDef] = useState([
     {
       headerName: "Date",
@@ -33,20 +33,70 @@ export default function TrainingList() {
     {
       headerName: "Customer",
       filter: true,
-      // using valuegetter to get first and last names from customer object
-      valueGetter: (p) =>
-        p.data.customer.firstname + " " + p.data.customer.lastname,
+      valueFormatter: nameFormatter,
+    },
+
+    {
+      // delete button
+      cellRenderer: (params) => (
+        <Button
+          color="error"
+          onClick={() =>
+            deleteTraining(
+              import.meta.env.VITE_TRAININGS_URL + "/" + params.data.id
+            )
+          }
+        >
+          Delete
+        </Button>
+      ),
+      width: 100,
     },
   ]);
 
+  // post a training to API
+  const addTraining = (newTraining) => {
+    fetch(import.meta.env.VITE_TRAININGS_URL, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(newTraining),
+    })
+      .then((response) => {
+        if (!response.ok)
+          throw new Error("Error when adding training: " + response.statusText);
+        return response.json();
+      })
+      .then(() => handleFetch())
+      .catch((err) => console.error(err));
+  };
+
   // valueformatter for date field. parses date from the raw data (which is in ISO format), then formats it to be more legible
   function dateFormatter(params) {
-    return format(parseISO(params.value), "yyyy-MM-dd HH:mm");
+    if (params.value == null) {
+      return "N/A";
+    } else {
+      return format(parseISO(params.value), "yyyy-MM-dd HH:mm");
+    }
   }
 
   // valueformatter for duration field. adds "minutes" for ease of reading
   function durationFormatter(params) {
-    return params.value + " minutes";
+    if (params.value == null) {
+      return "N/A";
+    } else {
+      return params.value + " minutes";
+    }
+  }
+
+  // valueformatter for names.
+  function nameFormatter(params) {
+    if (params.data.customer == null) {
+      return "N/A";
+    } else {
+      return (
+        params.data.customer.firstname + " " + params.data.customer.lastname
+      );
+    }
   }
 
   const handleFetch = () => {
@@ -56,9 +106,26 @@ export default function TrainingList() {
       .catch((err) => console.error(err));
   };
 
+  // delete training
+  const deleteTraining = (url) => {
+    if (window.confirm("Are you sure you with to delete this training?")) {
+      fetch(url, { method: "DELETE" })
+        .then((response) => {
+          if (!response.ok)
+            throw new Error(
+              "Error in deleting training: " + response.statusText
+            );
+          return response.json();
+        })
+        .then(() => handleFetch())
+        .catch((err) => console.error(err));
+    }
+  };
+
   return (
     <>
-      <div className="ag-theme-material" style={{ height: 700, width: 1000 }}>
+      <div className="ag-theme-material" style={{ height: 700 }}>
+        <AddTraining addTraining={addTraining} />
         <AgGridReact
           rowData={trainingData}
           columnDefs={colDef}

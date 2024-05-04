@@ -7,6 +7,7 @@ import Home from "./Home.jsx";
 import CustomerList from "./Components/CustomerList.jsx";
 import TrainingList from "./Components/TrainingList.jsx";
 
+// router for different app pages
 const router = createBrowserRouter([
   {
     path: "/",
