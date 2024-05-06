@@ -1,15 +1,17 @@
-import { useEffect, useState } from "react";
+import React, { useCallback, useRef, useState, useEffect } from "react";
 import { AgGridReact } from "ag-grid-react";
+import { createRoot } from "react-dom/client";
 import { fetchCustomers } from "../customerapi";
 import AddCustomer from "./AddCustomer";
 import Button from "@mui/material/Button";
-
+import { Typography } from "@mui/material";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-material.css";
 import EditCustomer from "./EditCustomer";
 
 // customer list for router
 export default function CustomerList() {
+  const gridRef = useRef();
   const [customers, setCustomers] = useState([]);
 
   // useEffect for doing the fetch just the once
@@ -17,15 +19,20 @@ export default function CustomerList() {
     handleFetch();
   }, []);
 
+  // export data to csv file. this is mostly taken from ag-grid documentation: https://www.ag-grid.com/react-data-grid/csv-export/
+  const onBtnExport = useCallback(() => {
+    gridRef.current.api.exportDataAsCsv();
+  }, []);
+
   // column defs for ag grid
   const [colDef, setColDef] = useState([
-    { field: "firstname", filter: true },
-    { field: "lastname", filter: true },
-    { field: "streetaddress", filter: true },
-    { field: "postcode", filter: true },
-    { field: "city", filter: true },
-    { field: "email", filter: true },
-    { field: "phone", filter: true },
+    { headerName: "First Name", field: "firstname", filter: true },
+    { headerName: "Last Name", field: "lastname", filter: true },
+    { headerName: "Street Address", field: "streetaddress", filter: true },
+    { headerName: "Post Code", field: "postcode", filter: true },
+    { headerName: "City", field: "city", filter: true },
+    { headerName: "Email", field: "email", filter: true },
+    { headerName: "Phone", field: "phone", filter: true },
     {
       // update button
       cellRenderer: (params) => (
@@ -114,7 +121,14 @@ export default function CustomerList() {
     <>
       <div className="ag-theme-material" style={{ height: 700 }}>
         <AddCustomer addCustomer={addCustomer} />
+        <Button variant="outlined" onClick={onBtnExport}>
+          Export as CSV
+        </Button>
+        <Typography variant="h4" sx={{ p: 2 }}>
+          List of customers
+        </Typography>
         <AgGridReact
+          ref={gridRef}
           rowData={customers}
           columnDefs={colDef}
           pagination={true}

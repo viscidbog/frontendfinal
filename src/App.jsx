@@ -64,6 +64,9 @@ function App() {
               >
                 Training List
               </MenuItem>
+              <MenuItem onClick={handleClose} component={Link} to="/calendar">
+                Calendar
+              </MenuItem>
             </Menu>
           </Toolbar>
         </AppBar>

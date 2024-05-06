@@ -97,6 +97,7 @@ export default function AddTraining({ addTraining }) {
               // datepicker to get the date. saves the value using a function shown above.
               label="Date"
               format="YYYY.MM.DD HH.mm"
+              defaultValue={dayjs(new Date())}
               onChange={(date) => changeDate(date)}
             />
             <TextField

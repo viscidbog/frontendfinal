@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { AgGridReact } from "ag-grid-react";
 import { fetchTrainings } from "../trainingapi";
 import { parseISO } from "date-fns";
+import { Typography } from "@mui/material";
 import format from "date-fns/format";
 import AddTraining from "./AddTraining";
 import Button from "@mui/material/Button";
@@ -126,6 +127,9 @@ export default function TrainingList() {
     <>
       <div className="ag-theme-material" style={{ height: 700 }}>
         <AddTraining addTraining={addTraining} />
+        <Typography variant="h4" sx={{ p: 2 }}>
+          List of trainings
+        </Typography>
         <AgGridReact
           rowData={trainingData}
           columnDefs={colDef}
