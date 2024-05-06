@@ -47,7 +47,11 @@ function App() {
               open={open}
               onClose={handleClose}
             >
-              <MenuItem onClick={handleClose} component={Link} to="/">
+              <MenuItem
+                onClick={handleClose}
+                component={Link}
+                to={("/", "/home")}
+              >
                 Home
               </MenuItem>
               <MenuItem

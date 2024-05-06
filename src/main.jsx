@@ -1,42 +1,25 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App.jsx";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+
 import Error from "./Error.jsx";
 import Home from "./Home.jsx";
 import CustomerList from "./Components/CustomerList.jsx";
 import TrainingList from "./Components/TrainingList.jsx";
 import TrainingCalendar from "./Components/TrainingCalendar.jsx";
-
-// router for different app pages
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <App />,
-    errorElement: <Error />,
-    children: [
-      {
-        element: <Home />,
-        index: true,
-      },
-      {
-        path: "customerlist",
-        element: <CustomerList />,
-      },
-      {
-        path: "traininglist",
-        element: <TrainingList />,
-      },
-      {
-        path: "calendar",
-        element: <TrainingCalendar />,
-      },
-    ],
-  },
-]);
+import { HashRouter } from "react-router-dom";
+import { Routes } from "react-router-dom";
+import { Route } from "react-router-dom";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
-    <RouterProvider router={router} />
-  </React.StrictMode>
+  <HashRouter basename="/">
+    <App />
+    <Routes>
+      <Route path="/home" element={<Home />} />
+      <Route path="/" element={<Home />} />
+      <Route path="/customerlist" element={<CustomerList />} />
+      <Route path="/traininglist" element={<TrainingList />} />
+      <Route path="/calendar" element={<TrainingCalendar />} />
+    </Routes>
+  </HashRouter>
 );
