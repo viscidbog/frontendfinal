@@ -1,6 +1,5 @@
 import { CSVLink } from "react-csv";
 import { useMemo, useState, useEffect } from "react";
-import { useTable } from "react-table";
 import { fetchCustomers } from "../customerapi";
 
 const columns = [
@@ -13,6 +12,7 @@ const columns = [
   { Header: "Phone", accessor: "phone" },
 ];
 
+// some of the functional parts for this were taken from Ag-grid's documentation: https://www.ag-grid.com/javascript-data-grid/csv-export/
 export default function ExportCSV() {
   // useEffect for doing the fetch just the once
   useEffect(() => {
@@ -27,9 +27,6 @@ export default function ExportCSV() {
       .then((data) => setCustomers(data._embedded.customers))
       .catch((err) => console.error(err));
   };
-
-  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
-    useTable({ columns, data });
 
   const csvData = [
     [
@@ -55,11 +52,13 @@ export default function ExportCSV() {
   ];
   return (
     <div className="App">
-      {/* Export Button Start */}
-      <CSVLink className="downloadbtn" filename="my-file.csv" data={csvData}>
+      <CSVLink
+        className="downloadbtn"
+        filename="exported_customer_data.csv"
+        data={csvData}
+      >
         Export to CSV
       </CSVLink>
-      {/* Export Button End */}
     </div>
   );
 }

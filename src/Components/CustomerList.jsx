@@ -1,6 +1,5 @@
 import React, { useCallback, useRef, useState, useEffect } from "react";
 import { AgGridReact } from "ag-grid-react";
-import { createRoot } from "react-dom/client";
 import { fetchCustomers } from "../customerapi";
 import AddCustomer from "./AddCustomer";
 import Button from "@mui/material/Button";

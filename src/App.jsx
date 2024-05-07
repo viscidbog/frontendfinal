@@ -71,6 +71,9 @@ function App() {
               <MenuItem onClick={handleClose} component={Link} to="/calendar">
                 Calendar
               </MenuItem>
+              <MenuItem onClick={handleClose} component={Link} to="/chart">
+                Chart
+              </MenuItem>
             </Menu>
           </Toolbar>
         </AppBar>

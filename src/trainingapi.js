@@ -1,5 +1,3 @@
-import moment from "moment";
-
 // fetch training data
 export const fetchTrainings = () => {
   return fetch(import.meta.env.VITE_GETTRAININGS_URL).then((response) => {
@@ -8,4 +6,3 @@ export const fetchTrainings = () => {
     return response.json();
   });
 };
-
